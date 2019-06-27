@@ -1003,6 +1003,7 @@ GameObject:
   - component: {fileID: 942003198005755742}
   - component: {fileID: 2309257070944662790}
   - component: {fileID: 5269611703842403735}
+  - component: {fileID: 1689209066073506103}
   m_Layer: 9
   m_Name: Warior
   m_TagString: Player
@@ -1078,10 +1079,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfe8a7d196b5a2e4c80dbdf0fcf98e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAnimation: {fileID: 0}
+  joystick: {fileID: 0}
   movement_speed: 3
   gravity: 9.8
   rotation_speed: 0.15
   rotateDegressPerSecond: 180
+  moveDirection: {x: 0, y: 0, z: 0}
+  rotation_direction: {x: 0, y: 0, z: 0}
 --- !u!114 &2568964888550694844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095,6 +1100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackPoint: {fileID: 5481454037741574371}
+  isAttack: 0
+  joyButton: {fileID: 0}
 --- !u!114 &2864490748618616574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1148,6 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76b6cdae7a13822458cc6060e5566902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthCondition: {fileID: 0}
 --- !u!114 &2309257070944662790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1167,6 +1175,8 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: 5269611703842403735}
+  - {fileID: 942003198005755742}
+  - {fileID: 1689209066073506103}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1185,6 +1195,36 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!114 &1689209066073506103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6548223063269095856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 1
+    Name: Walk
+  - Type: 9
+    SynchronizeType: 1
+    Name: Attack2
+  - Type: 9
+    SynchronizeType: 1
+    Name: Attack1
+  - Type: 4
+    SynchronizeType: 1
+    Name: Defend
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
 --- !u!1 &6548223063269095858
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,7 +1950,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6201893517071212631}
   - component: {fileID: 7001621550265728577}
-  - component: {fileID: 8173846091512599188}
   m_Layer: 0
   m_Name: Camera Player
   m_TagString: MainCamera
@@ -1974,14 +2013,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &8173846091512599188
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6595851908437538253}
-  m_Enabled: 1
 --- !u!1001 &3138869686167086928
 PrefabInstance:
   m_ObjectHideFlags: 0

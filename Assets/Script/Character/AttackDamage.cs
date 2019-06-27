@@ -8,7 +8,7 @@ namespace FighterAcademy
     {
         public LayerMask layer;
         public float radius = 1f;
-        public float damage = 1f;
+        public float damage = 10f;
         // Update is called once per frame
         void Update()
         {

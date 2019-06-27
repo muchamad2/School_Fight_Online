@@ -5,15 +5,13 @@ using Photon.Pun;
 
 namespace FighterAcademy
 {
-    public class CharacterAnimation : MonoBehaviourPun
+    public class CharacterAnimation : MonoBehaviour
     {
         private Animator anim;
         // Start is called before the first frame update
         void Awake()
         {
             anim = GetComponent<Animator>();
-            if (!photonView.IsMine && GetComponent<PlayerMove>() != null)
-                Destroy(GetComponent<PlayerMove>());
         }
 
         public void Walk(bool walk)

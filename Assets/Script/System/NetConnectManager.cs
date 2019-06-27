@@ -36,7 +36,7 @@ namespace FighterAcademy
         public void OnClickConnectToMaster()
         {
             PhotonNetwork.OfflineMode = false;
-            PhotonNetwork.NickName = "Player Name";
+            PhotonNetwork.NickName = "PlayerName";
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.GameVersion = "v1";
 
@@ -74,8 +74,40 @@ namespace FighterAcademy
             TrisToConnectToRoom = false;
             Debug.Log("Master: " + PhotonNetwork.IsMasterClient + " | Players in room : " + PhotonNetwork.CurrentRoom.PlayerCount + 
                 "Room name : " + PhotonNetwork.CurrentRoom.Name);
-            SceneManager.LoadScene("Arena");
+
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            {
+                PhotonNetwork.LoadLevel("SinglePlayer");
+            }
+            
         }
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            base.OnPlayerEnteredRoom(newPlayer);
+            Debug.LogFormat("OnPlayerEnterdRoom {0}", newPlayer.NickName);
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogFormat("OnPlayerEnterdRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient);
+
+                loadLevel();
+            }
+        }
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            base.OnPlayerLeftRoom(otherPlayer);
+            Debug.LogFormat("OnPlayerLeftRoom {0}", otherPlayer.NickName);
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogFormat("OnPlayerLeftRoom isMasterClient {0}", PhotonNetwork.IsMasterClient);
+
+                loadLevel();
+            }
+        }
+
         //membuat room baru
         public override void OnCreatedRoom()
         {
@@ -92,6 +124,15 @@ namespace FighterAcademy
             Debug.Log(message);
             TrisToConnectToRoom = false;
             
+        }
+
+        void loadLevel()
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogError("Photonnetwork: trying to load a level but we are not master client");
+            }
+            PhotonNetwork.LoadLevel("Multiplayer");
         }
     }
 }
