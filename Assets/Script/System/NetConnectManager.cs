@@ -10,15 +10,22 @@ namespace FighterAcademy
 {
     public class NetConnectManager : MonoBehaviourPunCallbacks
     {
+        public static NetConnectManager Instance;
+
         public Button BtnConnectMaster;
         public Button BtnConnectRoom;
+        public MenuUI menuManager;
 
         private bool TrisToConnectToMaster;
         private bool TrisToConnectToRoom;
         // Start is called before the first frame update
         void Start()
         {
-            DontDestroyOnLoad(gameObject);
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
             TrisToConnectToMaster = false;
             TrisToConnectToRoom = false;
         }
@@ -26,24 +33,42 @@ namespace FighterAcademy
         // Update is called once per frame
         void Update()
         {
-            if(BtnConnectMaster != null)
+            if(BtnConnectMaster != null && menuManager != null)
+            {
                 BtnConnectMaster.gameObject.SetActive(!PhotonNetwork.IsConnected && !TrisToConnectToMaster);
+                menuManager.setActive(!PhotonNetwork.IsConnected && !TrisToConnectToMaster);
+            }
+                
 
             if(BtnConnectRoom != null)
+            {
                 BtnConnectRoom.gameObject.SetActive(PhotonNetwork.IsConnected && !TrisToConnectToRoom && !TrisToConnectToMaster);
+                menuManager.LobbyActive(PhotonNetwork.IsConnected && !TrisToConnectToRoom && !TrisToConnectToMaster);
+            }
+                
         }
 
         public void OnClickConnectToMaster()
         {
             PhotonNetwork.OfflineMode = false;
-            PhotonNetwork.NickName = "PlayerName";
+            PhotonNetwork.NickName = menuManager.ipCharName.text;
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.GameVersion = "v1";
 
             TrisToConnectToMaster = true;
             PhotonNetwork.ConnectUsingSettings();
         }
+        public void ConnectedToMaster(string name)
+        {
+            PhotonNetwork.OfflineMode = false;
+            PhotonNetwork.NickName = name;
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.GameVersion = "v1";
 
+            TrisToConnectToMaster = true;
+            PhotonNetwork.ConnectUsingSettings();
+
+        }
         public void OnClickConnectToRoom()
         {
             if (!PhotonNetwork.IsConnected)
@@ -103,7 +128,7 @@ namespace FighterAcademy
             if (PhotonNetwork.IsMasterClient)
             {
                 Debug.LogFormat("OnPlayerLeftRoom isMasterClient {0}", PhotonNetwork.IsMasterClient);
-
+                
                 loadLevel();
             }
         }
@@ -116,7 +141,7 @@ namespace FighterAcademy
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             base.OnJoinRandomFailed(returnCode, message);
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 3 });
+            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 2 });
         }
         public override void OnCreateRoomFailed(short returnCode, string message)
         {

@@ -47,10 +47,28 @@ namespace FighterAcademy
                 return;
             }
         }
-        // Update is called once per frame
-        void Update()
+        public void Win(int score)
+        {
+            PlayerPrefs.SetInt("Score", score);
+            PlayGamesController.Instance.PostLeaderBoards(score);
+            OnLeftRoom();
+        }
+        public void Lose()
+        {
+            OnLeftRoom();
+        }
+        public override void OnLeftRoom()
+        {
+            PhotonNetwork.LoadLevel("Menu");
+            PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
+            Destroy(GameObject.Find("*thegameobjecttobedestroyed*"));
+            base.OnLeftRoom();
+        }
+        public void LeaveRoom()
         {
 
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LoadLevel("Menu");
         }
     }
 

@@ -16,7 +16,7 @@ namespace FighterAcademy
             if (hits.Length > 0)
             {
                 Debug.Log("Hit damage");
-                hits[0].GetComponent<HealthScript>().ApplyDamage(damage);
+                hits[0].GetComponent<PlayerOnNetwork>().OnHit(damage);
                 gameObject.SetActive(false);
             }
         }

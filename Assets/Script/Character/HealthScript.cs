@@ -37,6 +37,7 @@ namespace FighterAcademy
                 RotateAfterDead();
             }
         }
+        
         public void ApplyDamage(float damage)
         {
             if (shieldActived)
@@ -50,26 +51,42 @@ namespace FighterAcademy
             }
             if (health <= 0)
             {
+                
                 GetComponent<Animator>().enabled = false;
                 soundFX.Die();
 
                 StartCoroutine(AllowRotate());
 
+                GameManager.Instance.OnLeftRoom();
                 if (isPlayer)
                 {
-                    GetComponent<PlayerMove>().enabled = false;
-                    GetComponent<PlayerAttack>().enabled = false;
+                    if(GetComponent<PlayerMove>() != null && GetComponent<PlayerAttack>() != null)
+                    {
+                        GetComponent<PlayerMove>().enabled = false;
+                        GetComponent<PlayerAttack>().enabled = false;
+
+                    }
 
                     Camera.main.transform.SetParent(null);
+                    
 
-                    GameObject.FindGameObjectWithTag(Tags.ENEMY_TAG)
+                    if (GameObject.FindGameObjectWithTag(Tags.ENEMY_TAG)
+                        .GetComponent<EnemyController>() != null)
+                    {
+                        GameObject.FindGameObjectWithTag(Tags.ENEMY_TAG)
                         .GetComponent<EnemyController>().enabled = false;
+                    }
+                    GameManager.Instance.Lose();
                 }
                 else
                 {
+                    GameManager.Instance.Win(10);
                     GetComponent<EnemyController>().enabled = false;
                     GetComponent<NavMeshAgent>().enabled = false;
                 }
+
+                
+               
             }
         }
         void RotateAfterDead()

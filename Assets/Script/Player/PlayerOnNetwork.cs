@@ -7,14 +7,17 @@ namespace FighterAcademy
 {
     public class PlayerOnNetwork : MonoBehaviourPun, IPunObservable
     {
-        [SerializeField]
+        
         #region PlayerStats Controller
-        private HealthScript healthCondition;
+        public HealthScript healthCondition;
         private PlayerMove moveControll;
+        [SerializeField]
         private PlayerAttack attackControll;
         #endregion
 
         public static GameObject localPlayer;
+
+        public GameObject playerUiPrefb;
         // Start is called before the first frame update
         private void Awake()
         {
@@ -32,38 +35,71 @@ namespace FighterAcademy
                 Destroy(GetComponent<PlayerAttack>());
                 GetComponentInChildren<Camera>().gameObject.SetActive(false);
                 gameObject.layer = 10;
+                gameObject.tag = Tags.ENEMY_TAG;
             }
 
             healthCondition = GetComponent<HealthScript>();
             moveControll = GetComponent<PlayerMove>();
             attackControll = GetComponent<PlayerAttack>();
 
-#if UNITY_5_4_OR_NEWER
+
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
-#endif
+
+            if(playerUiPrefb != null)
+            {
+                GameObject _ui = Instantiate(playerUiPrefb);
+                //_ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+                _ui.GetComponent<PlayerUI>().SetTarget(this);
+            }
+            else
+            {
+                Debug.LogWarning("<Color=Red><a>Missing</a></Color> PlayerUiPrefab reference on player Prefab.", this);
+            }
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             if (stream.IsWriting)
             {
-                stream.SendNext(healthCondition.health);
-                stream.SendNext(moveControll.moveDirection);
-                stream.SendNext(moveControll.rotation_direction);
-                stream.SendNext(attackControll.isAttack);
-                stream.SendNext(attackControll.attackPoint.activeSelf);
+                if(healthCondition != null)
+                {
+                    stream.SendNext(healthCondition.health);
+                }
+                if(moveControll != null)
+                {
+                    stream.SendNext(moveControll.moveDirection);
+                    stream.SendNext(moveControll.rotation_direction);
+                }
+                if(attackControll != null)
+                {
+                    stream.SendNext(attackControll.isAttack);
+                   // stream.SendNext(attackControll.attackPoint.activeSelf);
+                }
+
             }
             else
             {
-                healthCondition.health = (float)stream.ReceiveNext();
-                moveControll.moveDirection = (Vector3)stream.ReceiveNext();
-                moveControll.rotation_direction = (Vector3)stream.ReceiveNext();
-                attackControll.isAttack = (bool)stream.ReceiveNext();
-                attackControll.attackPoint.SetActive((bool)stream.ReceiveNext());
+                if(healthCondition != null)
+                {
+                    healthCondition.health = (float)stream.ReceiveNext();
+                }
+
+                if(moveControll != null)
+                {
+                    moveControll.moveDirection = (Vector3)stream.ReceiveNext();
+                    moveControll.rotation_direction = (Vector3)stream.ReceiveNext();
+                }
+
+                if(attackControll != null)
+                {
+                    attackControll.isAttack = (bool)stream.ReceiveNext();
+                    //attackControll.attackPoint.SetActive((bool)stream.ReceiveNext());
+                }
+
             }
         }
 
-#if UNITY_5_4_OR_NEWER
+
         void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadingMode)
         {
             this.CalledOnLevelWasLoaded(scene.buildIndex);
@@ -71,17 +107,47 @@ namespace FighterAcademy
 
         void CalledOnLevelWasLoaded(int level)
         {
-            if(moveControll.joystick == null)
+            if (photonView.IsMine)
             {
-                moveControll.joystick = FindObjectOfType<Joystick>();
+                if (moveControll.joystick == null)
+                {
+                    moveControll.joystick = FindObjectOfType<Joystick>();
+                }
+
+                if (attackControll.joyButton == null)
+                {
+                    attackControll.joyButton = FindObjectOfType<JoystickButton>();
+                }
+
+                if (playerUiPrefb != null)
+                {
+                    GameObject _ui = Instantiate(playerUiPrefb);
+                    //_ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+                    _ui.GetComponent<PlayerUI>().SetTarget(this);
+                }
             }
-            if(attackControll.joyButton == null)
+            else
             {
-                attackControll.joyButton = FindObjectOfType<JoystickButton>();
+                if (playerUiPrefb != null)
+                {
+                    GameObject _ui = Instantiate(playerUiPrefb);
+                    //_ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+                    _ui.GetComponent<PlayerUI>().SetTarget(this);
+                }
             }
-            
         }
-#endif
+
+        public void OnHit(float Damage)
+        {
+            photonView.RPC("ApplyDamage", RpcTarget.All, Damage);
+        }
+
+        [PunRPC]
+        void ApplyDamage(float Damage,PhotonMessageInfo info)
+        {
+            healthCondition.ApplyDamage(Damage);
+            Debug.Log(info);
+        }
     }
 
 }

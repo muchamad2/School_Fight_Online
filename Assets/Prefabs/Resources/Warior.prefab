@@ -287,7 +287,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   radius: 1
-  damage: 1
+  damage: 10
 --- !u!1 &6548223063269095808
 GameObject:
   m_ObjectHideFlags: 0
@@ -1155,7 +1155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76b6cdae7a13822458cc6060e5566902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthCondition: {fileID: 0}
+  healthCondition: {fileID: 5455164234179815787}
+  attackControll: {fileID: 2568964888550694844}
+  playerUiPrefb: {fileID: 3392404369916752473, guid: 5c9e9502af6c021428799a70fc44716e,
+    type: 3}
 --- !u!114 &2309257070944662790
 MonoBehaviour:
   m_ObjectHideFlags: 0
