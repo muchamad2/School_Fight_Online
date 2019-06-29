@@ -23,8 +23,12 @@ namespace FighterAcademy
 
         void Start()
         {
-            Instance = this;
-
+            if(Instance == null)
+            {
+                Instance = this;
+                
+            }
+            
             if(playerPrefabs != null)
             {
                 var position = playerPrefabs.transform.position;
@@ -47,28 +51,21 @@ namespace FighterAcademy
                 return;
             }
         }
-        public void Win(int score)
+        public void Win(long score)
         {
-            PlayerPrefs.SetInt("Score", score);
+            
             PlayGamesController.Instance.PostLeaderBoards(score);
-            OnLeftRoom();
+            LeaveRoom();
         }
         public void Lose()
         {
-            OnLeftRoom();
+            LeaveRoom();
         }
-        public override void OnLeftRoom()
-        {
-            PhotonNetwork.LoadLevel("Menu");
-            PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
-            Destroy(GameObject.Find("*thegameobjecttobedestroyed*"));
-            base.OnLeftRoom();
-        }
+        
         public void LeaveRoom()
         {
-
+            PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
             PhotonNetwork.LeaveRoom();
-            PhotonNetwork.LoadLevel("Menu");
         }
     }
 

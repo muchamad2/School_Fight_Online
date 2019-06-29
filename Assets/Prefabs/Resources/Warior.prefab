@@ -1217,16 +1217,16 @@ MonoBehaviour:
     SynchronizeType: 1
     Name: Walk
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: Attack2
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: Attack1
   - Type: 4
     SynchronizeType: 1
     Name: Defend
   m_SynchronizeLayers:
-  - SynchronizeType: 1
+  - SynchronizeType: 2
     LayerIndex: 0
 --- !u!1 &6548223063269095858
 GameObject:

@@ -21,11 +21,11 @@ namespace FighterAcademy
         // Start is called before the first frame update
         void Start()
         {
-            if (Instance == null)
+            if(Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
+            DontDestroyOnLoad(gameObject);
             TrisToConnectToMaster = false;
             TrisToConnectToRoom = false;
         }
@@ -75,7 +75,10 @@ namespace FighterAcademy
                 return;
 
             TrisToConnectToRoom = true;
-            PhotonNetwork.JoinRandomRoom();
+            RoomOptions option = new RoomOptions();
+            option.MaxPlayers = 3;
+            PhotonNetwork.JoinOrCreateRoom("MyRoom", option, TypedLobby.Default, null);
+            //PhotonNetwork.JoinRandomRoom();
         }
 
         public override void OnDisconnected(DisconnectCause cause)
@@ -128,8 +131,8 @@ namespace FighterAcademy
             if (PhotonNetwork.IsMasterClient)
             {
                 Debug.LogFormat("OnPlayerLeftRoom isMasterClient {0}", PhotonNetwork.IsMasterClient);
-                
-                loadLevel();
+
+                PhotonNetwork.LoadLevel("Menu");
             }
         }
 
@@ -155,6 +158,7 @@ namespace FighterAcademy
         {
             if (!PhotonNetwork.IsMasterClient)
             {
+
                 Debug.LogError("Photonnetwork: trying to load a level but we are not master client");
             }
             PhotonNetwork.LoadLevel("Multiplayer");

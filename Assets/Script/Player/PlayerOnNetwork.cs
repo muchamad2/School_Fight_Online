@@ -29,6 +29,9 @@ namespace FighterAcademy
         }
         void Start()
         {
+            healthCondition = GetComponent<HealthScript>();
+            moveControll = GetComponent<PlayerMove>();
+            attackControll = GetComponent<PlayerAttack>();
             if (!photonView.IsMine && GetComponent<PlayerMove>() != null && GetComponent<PlayerAttack>() != null)
             {
                 Destroy(GetComponent<PlayerMove>());
@@ -36,11 +39,11 @@ namespace FighterAcademy
                 GetComponentInChildren<Camera>().gameObject.SetActive(false);
                 gameObject.layer = 10;
                 gameObject.tag = Tags.ENEMY_TAG;
+                if (healthCondition != null)
+                    healthCondition.isPlayer = false;
             }
 
-            healthCondition = GetComponent<HealthScript>();
-            moveControll = GetComponent<PlayerMove>();
-            attackControll = GetComponent<PlayerAttack>();
+
 
 
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
@@ -48,8 +51,8 @@ namespace FighterAcademy
             if(playerUiPrefb != null)
             {
                 GameObject _ui = Instantiate(playerUiPrefb);
-                //_ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
-                _ui.GetComponent<PlayerUI>().SetTarget(this);
+                _ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+                //_ui.GetComponent<PlayerUI>().SetTarget(this);
             }
             else
             {
@@ -67,13 +70,18 @@ namespace FighterAcademy
                 }
                 if(moveControll != null)
                 {
-                    stream.SendNext(moveControll.moveDirection);
-                    stream.SendNext(moveControll.rotation_direction);
+                    stream.SendNext(moveControll.moveDirection.x);
+                    stream.SendNext(moveControll.moveDirection.y);
+                    stream.SendNext(moveControll.moveDirection.z);
+                    stream.SendNext(moveControll.rotation_direction.x);
+                    stream.SendNext(moveControll.rotation_direction.y);
+                    stream.SendNext(moveControll.rotation_direction.z);
+
                 }
-                if(attackControll != null)
+                if (attackControll != null)
                 {
                     stream.SendNext(attackControll.isAttack);
-                   // stream.SendNext(attackControll.attackPoint.activeSelf);
+                    stream.SendNext(attackControll.attackPoint.activeSelf);
                 }
 
             }
@@ -86,14 +94,18 @@ namespace FighterAcademy
 
                 if(moveControll != null)
                 {
-                    moveControll.moveDirection = (Vector3)stream.ReceiveNext();
-                    moveControll.rotation_direction = (Vector3)stream.ReceiveNext();
+                    moveControll.moveDirection.x = (float)stream.ReceiveNext();
+                    moveControll.moveDirection.y = (float)stream.ReceiveNext();
+                    moveControll.moveDirection.z = (float)stream.ReceiveNext();
+                    moveControll.rotation_direction.x = (float)stream.ReceiveNext();
+                    moveControll.rotation_direction.y = (float)stream.ReceiveNext();
+                    moveControll.rotation_direction.z = (float)stream.ReceiveNext();
                 }
 
                 if(attackControll != null)
                 {
                     attackControll.isAttack = (bool)stream.ReceiveNext();
-                    //attackControll.attackPoint.SetActive((bool)stream.ReceiveNext());
+                    attackControll.attackPoint.SetActive((bool)stream.ReceiveNext());
                 }
 
             }
@@ -122,8 +134,8 @@ namespace FighterAcademy
                 if (playerUiPrefb != null)
                 {
                     GameObject _ui = Instantiate(playerUiPrefb);
-                    //_ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
-                    _ui.GetComponent<PlayerUI>().SetTarget(this);
+                    _ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+                    //_ui.GetComponent<PlayerUI>().SetTarget(this);
                 }
             }
             else
@@ -131,8 +143,8 @@ namespace FighterAcademy
                 if (playerUiPrefb != null)
                 {
                     GameObject _ui = Instantiate(playerUiPrefb);
-                    //_ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
-                    _ui.GetComponent<PlayerUI>().SetTarget(this);
+                    _ui.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+                    //_ui.GetComponent<PlayerUI>().SetTarget(this);
                 }
             }
         }

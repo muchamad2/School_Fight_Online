@@ -57,7 +57,7 @@ namespace FighterAcademy
 
                 StartCoroutine(AllowRotate());
 
-                GameManager.Instance.OnLeftRoom();
+                
                 if (isPlayer)
                 {
                     if(GetComponent<PlayerMove>() != null && GetComponent<PlayerAttack>() != null)
@@ -80,9 +80,10 @@ namespace FighterAcademy
                 }
                 else
                 {
-                    GameManager.Instance.Win(10);
+                    
                     GetComponent<EnemyController>().enabled = false;
                     GetComponent<NavMeshAgent>().enabled = false;
+                    GameManager.Instance.Win(10);
                 }
 
                 

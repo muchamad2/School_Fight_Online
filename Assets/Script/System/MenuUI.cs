@@ -8,10 +8,12 @@ namespace FighterAcademy
     public class MenuUI : MonoBehaviour
     {
         #region Public Field
+
         public InputField ipCharName;
         public Text charNameTxt;
         public Text scoreAfterMatch;
         public Button showLeaderBoards;
+
         #endregion
 
         private void Start()

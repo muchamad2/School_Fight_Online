@@ -30,7 +30,7 @@ namespace FighterAcademy
                 if(success == true)
                 {
                     Debug.Log("logged in googleplay games services : " + Social.localUser);
-                    
+                    ((PlayGamesPlatform)Social.Active).SetGravityForPopups(Gravity.TOP);
                     NetConnectManager.Instance.ConnectedToMaster(Social.localUser.userName);
                     
                 }
